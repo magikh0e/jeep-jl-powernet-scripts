@@ -6,6 +6,7 @@ import time
 import can
 import subprocess
 import signal
+import sys
 
 # If using vcan for log playback, change the values in the quotes below
 canIHS = "can0"
@@ -30,6 +31,21 @@ oldoilpres = None
 batterytemps = [0] * 12
 battery_page = False
 oldbatterytemps = [None] * 12
+packvoltage = 0
+cellvoltages = [0.0] * 96
+avgcellvoltage = 0.0
+mincellvoltage = 0.0
+maxcellvoltage = 0.0
+celldelta = 0.0
+livekw = 0.0
+pumpstate = False
+batterycurrentamps = 0.0
+batterybars = []
+batterytexts = []
+batterylabelsdrawn = []
+boostpsi = 0.0
+oldboostpsi = None
+headeritemscreated = False
 
 batterylabels = [
     "Front L1",
@@ -129,7 +145,58 @@ def steer(x,a,b):
 def pstemp(x,a):
     return(round(((x[a] * (9 / 5)) + 32)))
 
+def cellvoltage(x,a):
+    raw = ((x[a] << 8) | x[a+1])
+    return(round(raw / 1000.0, 3))
 
+def batterycurrent(x,a):
+
+    raw = ((x[a] << 8) | x[a+1])
+
+    current = raw * 0.1
+
+    return(round(current,1))
+
+def pumprunning(x,a):
+
+    return((x[a] & 0x01) == 1)
+
+#def manifoldpressure(x,a):
+#
+#    return(x[a])
+def manifoldpressure(x,a):
+
+    raw = ((x[a] << 8) | x[a+1])
+
+    return(round(raw * 0.1, 1))
+
+# Quit
+def quitprogram():
+
+    global notifier
+    global canC
+    global canIHS
+
+    try:
+        notifier.stop()
+    except:
+        pass
+
+    try:
+        canC.shutdown()
+    except:
+        pass
+
+    try:
+        canIHS.shutdown()
+    except:
+        pass
+
+    root.quit()
+    root.destroy()
+
+    sys.exit(0)
+    
 # Display Functions
 def full():
         print("full screen")
@@ -292,9 +359,94 @@ def newbatterytemp(index, value):
 
         drawbatterytemps()
 
-def drawbatterytemps():
+def newcellvoltage(index, value):
 
-    batterycanvas.delete("all")
+    global avgcellvoltage
+    global packvoltage
+    global mincellvoltage
+    global maxcellvoltage
+    global celldelta
+
+    cellvoltages[index] = value
+
+    validcells = [
+    v for v in cellvoltages
+    if 2.5 < v < 4.5
+    ]
+
+    if len(validcells) > 0:
+
+        avgcellvoltage = round(
+            sum(validcells) / len(validcells),
+            3)
+
+        packvoltage = round(
+            sum(validcells),
+            1)
+
+        mincellvoltage = round(min(validcells), 3)
+
+        maxcellvoltage = round(max(validcells), 3)
+
+        packvoltagelabel.config(
+            text=f"PACK {packvoltage}V")
+
+        avgcelllabel.config(
+            text=f"AVG {avgcellvoltage}V")
+
+def newboost(v):
+
+    global boostpsi
+    global oldboostpsi
+    print(f"MAP={v} kPa")
+
+
+    boostpsi = round(
+        ((v - 127) * 20.0) / 128.0,
+        1)
+    low_r = -15
+    hi_r = 25
+
+    if boostpsi < low_r:
+        boostpsi = low_r
+
+    if boostpsi > hi_r:
+        boostpsi = hi_r
+
+    if boostpsi != oldboostpsi:
+
+        boostpsiangle = (
+            120 * (hi_r - boostpsi)
+            / (hi_r - low_r)
+            + 30)
+
+        gauge4.itemconfig(
+            gauge4needle,
+            start=boostpsiangle)
+
+        color = "green"
+
+        if boostpsi < 0:
+            color = "cyan"
+
+        if boostpsi > 10:
+            color = "yellow"
+
+        if boostpsi > 18:
+            color = "red"
+
+        gauge4.itemconfig(
+            gauge4needle,
+            fill=color)
+        #print(f"MAP={boostpsi} psi")
+        oldboostpsi = boostpsi
+
+def setupbatterydisplay():
+
+    global headeritemscreated
+
+    if headeritemscreated:
+        return
 
     batterycanvas.create_text(
         400,
@@ -303,43 +455,92 @@ def drawbatterytemps():
         fill="white",
         font=("Helvetica", "20", "bold"))
 
-    batterycanvas.create_text(
+    for i in range(12):
+
+        x = 20 + (i * 62)
+
+        bar = batterycanvas.create_rectangle(
+            x,
+            280,
+            x + 45,
+            320,
+            fill="green",
+            outline="white",
+            width=2)
+
+        batterybars.append(bar)
+
+        temptext = batterycanvas.create_text(
+            x + 22,
+            240,
+            text="0°",
+            fill="white",
+            font=("Helvetica", "10", "bold"))
+
+        batterytexts.append(temptext)
+
+        label = batterycanvas.create_text(
+            x + 22,
+            320,
+            text=batterylabels[i],
+            fill="gray80",
+            angle=45,
+            font=("Helvetica", "8"))
+
+        batterylabelsdrawn.append(label)
+
+    headeritemscreated = True
+
+    global mintext
+    global avgtext
+    global maxtext
+    global deltatext
+
+    mintext = batterycanvas.create_text(
         120,
         60,
-        text=f"MIN: {packmin}°",
+        text="MIN",
         fill="cyan",
         font=("Helvetica", "14", "bold"))
 
-    batterycanvas.create_text(
+    avgtext = batterycanvas.create_text(
         300,
         60,
-        text=f"AVG: {packavg}°",
+        text="AVG",
         fill="white",
         font=("Helvetica", "14", "bold"))
 
-    batterycanvas.create_text(
+    maxtext = batterycanvas.create_text(
         500,
         60,
-        text=f"MAX: {packmax}°",
+        text="MAX",
         fill="orange",
         font=("Helvetica", "14", "bold"))
 
-    deltacolor = "green"
-
-    if packdelta >= 10:
-        deltacolor = "yellow"
-
-    if packdelta >= 15:
-        deltacolor = "red"
-
-    batterycanvas.create_text(
+    deltatext = batterycanvas.create_text(
         680,
         60,
-        text=f"DELTA: {packdelta}°",
-        fill=deltacolor,
+        text="DELTA",
+        fill="green",
         font=("Helvetica", "14", "bold"))
+    
+def drawbatterytemps():
 
-    x = 20
+    batterycanvas.itemconfig(
+        mintext,
+        text=f"MIN: {packmin}°")
+
+    batterycanvas.itemconfig(
+        avgtext,
+        text=f"AVG: {packavg}°")
+
+    batterycanvas.itemconfig(
+        maxtext,
+        text=f"MAX: {packmax}°")
+
+    batterycanvas.itemconfig(
+        deltatext,
+        text=f"DELTA: {packdelta}°")
 
     for i, temp in enumerate(batterytemps):
 
@@ -352,47 +553,90 @@ def drawbatterytemps():
 
         color = "green"
 
-        if temp > 110:
+        if temp > 89:
             color = "yellow"
 
-        if temp > 125:
+        if temp > 99:
             color = "orange"
 
-        if temp > 135:
+        if temp > 109:
             color = "red"
 
-        batterycanvas.create_rectangle(
+        x = 20 + (i * 62)
+
+        batterycanvas.coords(
+            batterybars[i],
             x,
             320 - height,
             x + 45,
-            320,
-            fill=color,
-            outline="white",
-            width=2)
+            320)
 
-        batterycanvas.create_text(
+        batterycanvas.itemconfig(
+            batterybars[i],
+            fill=color)
+
+        batterycanvas.itemconfig(
+            batterytexts[i],
+            text=f"{temp}°")
+
+        batterycanvas.coords(
+            batterytexts[i],
             x + 22,
-            340,
-            text=f"B{i}",
-            fill="white",
-            font=("Helvetica", "9", "bold"))
+            305 - height)
+    kwcolor = "green"
 
-        batterycanvas.create_text(
-            x + 22,
-            360,
-            text=batterylabels[i],
-            fill="gray80",
-            angle=45,
-            font=("Helvetica", "8"))
+    if livekw > 40:
+        kwcolor = "yellow"
 
-        batterycanvas.create_text(
-            x + 22,
-            305 - height,
-            text=f"{temp}°",
-            fill="white",
-            font=("Helvetica", "10", "bold"))
+    if livekw > 80:
+        kwcolor = "red"
 
-        x += 62
+    if livekw < 0:
+        kwcolor = "cyan"
+        
+    batterycanvas.create_text(
+    120,
+    90,
+    text=f"{livekw} kW",
+    fill=kwcolor,
+    font=("Helvetica", "18", "bold"))
+
+    pumpcolor = "red"
+    pumptext = "PUMP OFF"
+
+    if pumpstate:
+        pumpcolor = "cyan"
+        pumptext = "PUMP ON"
+
+    batterycanvas.create_oval(
+        620,
+        75,
+        650,
+        105,
+        fill=pumpcolor)
+
+    batterycanvas.create_text(
+        720,
+        90,
+        text=pumptext,
+        fill="white",
+        font=("Helvetica", "16", "bold"))
+
+
+def newbatterycurrent(v):
+    global batterycurrentamps
+    global livekw
+    batterycurrentamps = v
+    livekw = round(
+        (packvoltage * batterycurrentamps) / 1000,
+        1)
+    drawbatterytemps()
+    #print(f"current={v} a")
+
+def newpumpstate(v):
+    global pumpstate
+    pumpstate = v
+    drawbatterytemps()
 
 # list of can ID's and details to monitor in this order:
 # (ID, Channel, [("name", process, type, function, byte1, byte2)])
@@ -406,7 +650,7 @@ monitorlist=[(0x2C2,
              (0x322,
               canIHS,
               [("RPM",rpm,newrpm,0,1),
-               ("MPH",mph,newmph,2,3)]),
+               ("MPH",mph,newmph,2,3)]),          
              (0x127,
               canC,
               [("IAT",temp,newiat,0),
@@ -418,6 +662,9 @@ monitorlist=[(0x2C2,
              (0x093,
               canC,
               [("Gear",gear,newgear,2)]),
+             (0x081,
+              canC,
+              [("MAP",raw8,newboost,4)]),
              (0x277,
               canC,
               [("Transfer",xfer,newxfer,0)]),
@@ -440,9 +687,47 @@ monitorlist=[(0x2C2,
                ("BattTemp8", batterytemp, lambda v: newbatterytemp(8, v), 2),
                ("BattTemp9", batterytemp, lambda v: newbatterytemp(9, v), 3),
                ("BattTemp10", batterytemp, lambda v: newbatterytemp(10, v), 4),
-               ("BattTemp11", batterytemp, lambda v: newbatterytemp(11, v), 5)])
+               ("BattTemp11", batterytemp, lambda v: newbatterytemp(11, v), 5)],
+              ),
+             (0x07C,
+              canC,
+              [("BatteryCurrent",batterycurrent,newbatterycurrent,4)])
              ]
+for canid in range(0x487, 0x49F):
 
+    basecell = (canid - 0x487) * 4
+
+    monitorlist.append(
+
+        (canid,
+         canC,
+         [
+
+          (f"Cell{basecell}",
+           cellvoltage,
+           lambda v, i=basecell:
+               newcellvoltage(i, v),
+           0),
+
+          (f"Cell{basecell+1}",
+           cellvoltage,
+           lambda v, i=basecell+1:
+               newcellvoltage(i, v),
+           2),
+
+          (f"Cell{basecell+2}",
+           cellvoltage,
+           lambda v, i=basecell+2:
+               newcellvoltage(i, v),
+           4),
+
+          (f"Cell{basecell+3}",
+           cellvoltage,
+           lambda v, i=basecell+3:
+               newcellvoltage(i, v),
+           6)
+
+         ]))
 
 # Buttons
 def canwakeup():
@@ -479,6 +764,7 @@ def camera():
         camstatus = cam.poll()
         if camstatus is None:
                 frame.pack_forget()
+                batteryframe.pack_forget()
 
 def candump():
     global dump
@@ -507,7 +793,7 @@ def button4():
     synchvacbutton.pack(side=LEFT)
 def button5():
      quitbutton = Button(
-     topframe, text="QUIT", fg="red", activeforeground="red", bg="black", activebackground="black", font=("Helvetica", "16"), height=2, width=7, command=topframe.quit)
+     topframe, text="QUIT", fg="red", activeforeground="red", bg="black", activebackground="black", font=("Helvetica", "16"), height=2, width=7, command=quitprogram)
      quitbutton.pack(side=LEFT)
 def button6():
     screenoffbutton = Button(
@@ -566,23 +852,28 @@ text2label.pack(side=LEFT)
 
 text3dsc = Label(textframe, text="Gear", font=("Helvetica", "16"))
 text3dsc.pack(side=LEFT)
-text3label = Label(textframe, font=("Helvetica", "16"), width=5)
+text3label = Label(textframe, font=("Helvetica", "16"), width=3)
 text3label.pack(side=LEFT)
 
 text4dsc = Label(textframe, text="Xfer", font=("Helvetica", "16"))
 text4dsc.pack(side=LEFT)
-text4label = Label(textframe, font=("Helvetica", "16"), width=5)
+text4label = Label(textframe, font=("Helvetica", "16"), width=3)
 text4label.pack(side=LEFT)
 
-text5dsc = Label(textframe, text="", font=("Helvetica", "16"))
-text5dsc.pack(side=LEFT)
-text5label = Label(textframe, font=("Helvetica", "16"), width=5)
-text5label.pack(side=LEFT)
+packvoltagelabel = Label(
+    textframe,
+    text="PACK ---.-V",
+    font=("Helvetica", "14", "bold"))
 
-text6dsc = Label(textframe, text="", font=("Helvetica", "16"))
-text6dsc.pack(side=LEFT)
-text6label = Label(textframe, font=("Helvetica", "16"), width=5)
-text6label.pack(side=LEFT)
+packvoltagelabel.pack(side=LEFT)
+
+
+avgcelllabel = Label(
+    textframe,
+    text="AVG -.---V",
+    font=("Helvetica", "14", "bold"))
+
+avgcelllabel.pack(side=LEFT)
 
 textframe2=Frame(root)
 textframe2.pack(side=BOTTOM, fill="x")
@@ -648,7 +939,7 @@ gauge3needle = gauge3.create_arc(coord, start= 150, extent=1, width=7)
 gauge4 = Canvas(frame, width=200, height=175)
 gauge4.grid(row=1, column=4)
 gauge4.create_arc(coord, start=30, extent=120, fill="white",  width=2)
-gauge4desc = gauge4.create_text(100,120, text="", font=("Helvetica", "16"))
+gauge4desc = gauge4.create_text(100,120, text="BoostPSI", font=("Helvetica", "16"))
 gauge4needle = gauge4.create_arc(coord, start= 150, extent=1, width=7)
 
 gauge5 = Canvas(frame, width=200, height=175)
@@ -678,6 +969,17 @@ gauge8desc = gauge8.create_text(100,120, text="ROLL", font=("Helvetica", "16"))
 gauge8label = gauge8.create_text(100,140, text="", font=("Helvetica", "16"))
 gauge8needle = gauge8.create_arc(fullcoord, start= 0, extent=180, width=7, fill="green")
 
+kwcolor = "green"
+
+if livekw > 20:
+    kwcolor = "yellow"
+
+if livekw > 50:
+    kwcolor = "red"
+
+if livekw < -10:
+    kwcolor = "cyan"
+
 batteryframe = Frame(root)
 batteryframe.configure(bg='black')
 
@@ -688,6 +990,8 @@ batterycanvas = Canvas(
     bg='black',
     highlightthickness=0)
 
+
+setupbatterydisplay()
 batterycanvas.pack(fill="both", expand=True)
 
 # cheat

@@ -18,6 +18,7 @@ rpm = None
 mph = None
 fsstate = True
 cam = None
+dump = None
 oldpstemp = None
 oldrpm = None
 oldtilt = None
@@ -294,10 +295,19 @@ def camera():
         cam = None
         frame.pack(side=TOP, fill="x")
     else:
-        cam = subprocess.Popen(["raspivid", "-t", "0", "-v", "-w", "800", "-h", "480", "-op", "200", "-rot", "180"])
+        cam = subprocess.Popen(["raspivid", "-t", "0", "-v", "-w", "800", "-h", "480", "-op", "200"])
         camstatus = cam.poll()
         if camstatus is None:
                 frame.pack_forget()
+
+def candump():
+    global dump
+    if dump:
+        dump.terminate()
+        dump = None
+    else:
+        dump = subprocess.Popen(["candump", "-l", "any"])
+
 
 def button1():
     bigbutton1 = Button(
@@ -501,7 +511,8 @@ root.mainloop()
 bus.shutdown()
 if cam:
     cam.terminate()
-
+if dump:
+    dump.terminate()
 
 root.mainloop()
 bus.shutdown()
