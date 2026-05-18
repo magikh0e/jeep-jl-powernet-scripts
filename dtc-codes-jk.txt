@@ -1,0 +1,692 @@
+# JK Wrangler (2007-2018) DTC code reference
+# Tab-separated:  <CODE>\t<DESCRIPTION>
+# Comments begin with #
+#
+# Most P0xxx codes are SAE J2012 standardised and apply to other
+# FCA / Stellantis platforms (JL Wrangler, JT Gladiator, Grand
+# Cherokee, Ram).  P1xxx, Bxxxx, Cxxxx, Uxxxx codes are manufacturer-
+# specific to FCA and may not transfer 1:1 to non-FCA vehicles.
+#
+# Lookup format used by dtc.sh: matches first whitespace-delimited
+# token after stripping a leading "#" comment.
+#
+# Duplicates in the upstream source have been collapsed.  Where
+# different descriptions exist for the same code (B1644, B210D,
+# B210E, U0121, U0141, U0151, U0155, U0184, U0186), the most
+# descriptive variant is kept.
+#
+# ===========================================================
+# BODY  (B-codes)  --  audio, HVAC, lighting, locks, RKE, airbags
+# ===========================================================
+
+# HVAC / Climate
+B1001	A/C Switch Request Input Circuit Low (ATC & MTC)
+B1002	A/C Switch Request Input Circuit High (CCN)
+B1016	Rear Defrost Switch Input Circuit Low (CCN)
+B1031	Evaporator Fin Temperature Sensor Circuit Low (MTC)
+B1032	Evaporator Fin Temperature Sensor Circuit High (MTC)
+B10C1	A/C Select Switch Stuck (CCN)
+B10C2	Rear Defrost Switch Stuck - Cluster
+
+# Cluster switches / compass
+B123F	Menu Switch Stuck
+B127A	Compass Performance
+B1288	Trip/Toggle Switch Performance
+
+# Audio - Direct speaker outputs
+B1401	Front Left Audio Speaker Output Circuit Low
+B1402	Front Left Audio Speaker Output Circuit High
+B1403	Front Left Audio Speaker Output Circuit Open
+B1405	Front Right Audio Speaker Output Circuit Low
+B1406	Front Right Audio Speaker Output Circuit High
+B1407	Front Right Audio Speaker Output Circuit Open
+B1409	Rear Left Audio Speaker Output Circuit Low
+B140A	Rear Left Audio Speaker Output Circuit High
+B140B	Rear Left Audio Speaker Output Circuit Open
+B140D	Rear Right Audio Speaker Output Circuit Low
+B140E	Rear Right Audio Speaker Output Circuit High
+B140F	Rear Right Audio Speaker Output Circuit Open
+
+# Audio - Media and antennas
+B1420	Audio Cassette Error / Inoperable Cassette
+B1421	Audio CD Read Error / Inoperable Disc
+B1422	Audio DVD Read Error / Inoperable Disc
+B1423	VES DVD Read Error / Inoperable Disc
+B1424	Improper DVD - Wrong Region
+B1429	Radio Display High Temperature
+B142A	Radio Unit High Temperature
+B142C	VES Video Screen Disconnected
+B142D	Audio Antenna Not Connected
+B142E	GPS Antenna Not Connected
+B142F	Satellite Radio Antenna Not Connected
+B1430	Satellite Radio Antenna Internal Performance
+
+# Audio - Channel outputs (amplified systems)
+B1460	Channel 1 Audio Speaker Output Circuit Performance
+B1461	Channel 1 Audio Speaker Output Circuit Low
+B1462	Channel 1 Audio Speaker Output Circuit High
+B1463	Channel 1 Audio Speaker Output Circuit Open
+B1464	Channel 1 Audio Speaker Output Circuit Shorted Together
+B1465	Channel 2 Audio Speaker Output Circuit Performance
+B1466	Channel 2 Audio Speaker Output Circuit Low
+B1467	Channel 2 Audio Speaker Output Circuit High
+B1468	Channel 2 Audio Speaker Output Circuit Open
+B1469	Channel 2 Audio Speaker Output Circuit Shorted Together
+B146A	Channel 3 Audio Speaker Output Circuit Performance
+B146B	Channel 3 Audio Speaker Output Circuit Low
+B146C	Channel 3 Audio Speaker Output Circuit High
+B146D	Channel 3 Audio Speaker Output Circuit Open
+B146E	Channel 3 Audio Speaker Output Circuit Shorted Together
+B146F	Channel 4 Audio Speaker Output Circuit Performance
+B1470	Channel 4 Audio Speaker Output Circuit Low
+B1471	Channel 4 Audio Speaker Output Circuit High
+B1472	Channel 4 Audio Speaker Output Circuit Open
+B1473	Channel 4 Audio Speaker Output Circuit Shorted Together
+B1474	Channel 5 Audio Speaker Output Circuit Performance
+B1475	Channel 5 Audio Speaker Output Circuit Low
+B1476	Channel 5 Audio Speaker Output Circuit High
+B1477	Channel 5 Audio Speaker Output Circuit Open
+B1478	Channel 5 Audio Speaker Output Circuit Shorted Together
+B1479	Channel 6 Audio Speaker Output Circuit Performance
+B147A	Channel 6 Audio Speaker Output Circuit Low
+B147B	Channel 6 Audio Speaker Output Circuit High
+B147C	Channel 6 Audio Speaker Output Circuit Open
+B147D	Channel 6 Audio Speaker Output Circuit Shorted Together
+
+# Lighting - Panel / dome / reading
+B1613	Panel Illumination Control Circuit Low
+B1615	Panel Illumination Control Circuit Open
+B161A	Courtesy / Dome Lamp Control Circuit
+B161E	Reading Lamp Control Circuit
+
+# Lighting - Headlamps (low / high beam)
+B162B	Left Low Beam Control Circuit Low
+B162C	Left Low Beam Control Circuit High
+B162F	Right Low Beam Control Circuit Low
+B1630	Right Low Beam Control Circuit High
+B1633	Left High Beam Control Circuit Low
+B1634	Left High Beam Control Circuit High
+B1637	Right High Beam Control Circuit Low
+B1638	Right High Beam Control Circuit High
+
+# Lighting - Turn signals
+B163B	Front Left Turn Control Circuit Low
+B163C	Front Left Turn Control Circuit High
+B163F	Front Right Turn Control Circuit Low
+B1640	Front Right Turn Control Circuit High
+B1643	Rear Left Turn Control Circuit Low
+B1644	Rear Left Turn Control Circuit High (also: Right Stop Lamp Control Circuit High on some configs)
+B1647	Rear Right Turn Control Circuit Low
+B1648	Rear Right Turn Control Circuit High
+
+# Lighting - Fog and tow
+B1663	Rear Fog Lamp Control Circuit Low
+B1664	Rear Fog Lamp Control Circuit High
+B166B	Left Trailer Tow Lamp Control Circuit Low
+B166C	Left Trailer Tow Lamp Control Circuit High
+B166F	Right Trailer Tow Lamp Control Circuit Low
+B1670	Right Trailer Tow Lamp Control Circuit High
+B16B1	Left Stop Lamp Control Circuit High
+B16F8	Front Left Fog Lamp Control Circuit Low
+B16F9	Front Left Fog Lamp Control Circuit High
+B16FC	Front Right Fog Lamp Control Circuit Low
+B16FD	Front Right Fog Lamp Control Circuit High
+
+# Lighting - Overcurrent faults
+B17B8	Left Stop Lamp Control Circuit Overcurrent
+B17B9	Right Stop Lamp Control Circuit Overcurrent
+B17BA	Headlamp Leveling Motor Control Circuit Overcurrent
+B17BF	Left Sidemarker Lamp Control Circuit Overcurrent
+B17C4	Right Sidemarker Lamp Control Circuit Overcurrent
+
+# Doors / locks
+B1801	Driver Door Lock / Unlock Switch Circuit Low - Cluster
+B1806	Passenger Door Lock / Unlock Switch Circuit Low - TIPM
+B1934	Driver Door Lock / Unlock Switch Circuit Stuck - Cluster
+B1935	Passenger Door Lock / Unlock Switch Circuit Stuck - TIPM
+
+# Keyless entry / security - RKE fobs
+B1A08	RKE FOB 1 Performance
+B1A09	RKE FOB 2 Performance
+B1A0A	RKE FOB 3 Performance
+B1A0B	RKE FOB 4 Performance
+B1A0C	RKE FOB 5 Performance
+B1A0D	RKE FOB 6 Performance
+B1A0E	RKE FOB 7 Performance
+B1A0F	RKE FOB 8 Performance
+B1A10	RKE FOB 1 Battery Low
+B1A11	RKE FOB 2 Battery Low
+B1A12	RKE FOB 3 Battery Low
+B1A13	RKE FOB 4 Battery Low
+B1A14	RKE FOB 5 Battery Low
+B1A15	RKE FOB 6 Battery Low
+B1A16	RKE FOB 7 Battery Low
+B1A17	RKE FOB 8 Battery Low
+B1A20	PRE-ARM Timeout
+B1A23	RKE Receiver Performance
+B1A24	Key Not Programmed
+B1A25	Invalid Key
+B1A26	Maximum Number Of Keys Programmed
+B1A27	SKREEM Programming Performance
+B1A28	ECM Mismatch With SKIM
+B1A29	SKIM Basestation Mismatch
+B1A3C	Internal Siren Battery
+B1A3D	Siren Battery / Loss Of Power Supply
+B1A3E	Siren / ITM Mismatch
+B1A3F	ITM Arming Sequence Performance
+B1A48	Intrusion Sensor 1 Internal
+B1A5F	Intrusion Sensor 2 Internal
+B1A6D	Intrusion Sensor 3 Internal
+
+# Airbags / restraints - Driver / passenger squibs
+B1B00	Driver Airbag Squib 1 Circuit Low
+B1B01	Driver Airbag Squib 1 Circuit High
+B1B02	Driver Airbag Squib 1 Circuit Open
+B1B03	Driver Airbag Squib 1 Circuit Shorted Together
+B1B04	Driver Airbag Squib 2 Circuit Low
+B1B05	Driver Airbag Squib 2 Circuit High
+B1B06	Driver Airbag Squib 2 Circuit Open
+B1B07	Driver Airbag Squib 2 Circuit Shorted Together
+B1B08	Passenger Airbag Squib 1 Circuit Low
+B1B09	Passenger Airbag Squib 1 Circuit High
+B1B0A	Passenger Airbag Squib 1 Circuit Open
+B1B0B	Passenger Airbag Squib 1 Circuit Shorted Together
+B1B0C	Passenger Airbag Squib 2 Circuit Low
+B1B0D	Passenger Airbag Squib 2 Circuit High
+B1B0E	Passenger Airbag Squib 2 Circuit Open
+B1B0F	Passenger Airbag Squib 2 Circuits Shorted Together
+
+# Airbags / restraints - Seat belts / acceleration sensors
+B1B54	1st Row Passenger Seat Belt Sensor Circuit Low
+B1B55	1st Row Passenger Seat Belt Sensor Circuit High
+B1B56	1st Row Passenger Seat Belt Sensor Circuit Open
+B1B70	Up-Front Left Satellite Acceleration Sensor Internal
+B1B71	Up-Front Right Satellite Acceleration Sensor Internal
+B1B72	Left Side Satellite Acceleration Sensor 1 Internal
+B1B75	Right Side Satellite Acceleration Sensor 1 Internal
+
+# Airbags / restraints - Occupant classification (seat weight sensors)
+B1B78	Passenger Seat Weight Sensor 3 - Left Front Performance
+B1B79	Passenger Seat Weight Sensor 3 - Left Front Input Circuit Low
+B1B7A	Passenger Seat Weight Sensor 3 - Left Front Input Circuit High
+B1B7D	Passenger Seat Weight Sensor 2 - Right Front Performance
+B1B7E	Passenger Seat Weight Sensor 2 - Right Front Input Circuit Low
+B1B7F	Passenger Seat Weight Sensor 2 - Right Front Input Circuit High
+B1B82	Passenger Seat Weight Sensor 4 - Left Rear Performance
+B1B83	Passenger Seat Weight Sensor 4 - Left Rear Input Circuit Low
+B1B84	Passenger Seat Weight Sensor 4 - Left Rear Input Circuit High
+B1B87	Passenger Seat Weight Sensor 1 - Right Rear Performance
+B1B88	Passenger Seat Weight Sensor 1 - Right Rear Input Circuit Low
+B1B89	Passenger Seat Weight Sensor 1 - Right Rear Input Circuit High
+B1B8D	Driver Seat Track Position Sensor Circuit Low
+B1B8E	Driver Seat Track Position Sensor Circuit High
+B1B8F	Driver Seat Track Position Sensor Circuit Open
+B1B93	Passenger Seat Track Position Sensor Circuit Low
+B1B94	Passenger Seat Track Position Sensor Circuit High
+B1B95	Passenger Seat Track Position Sensor Circuit Open
+B1BA5	Airbag Squib Configuration Mismatch
+B1BA6	Occupant Classification Undetermined
+B1BA7	Occupant Classification System Verification Required
+B1BA8	OCM System Out Of Calibration / Not Calibrated
+B1BAA	Occupant Classification Module Configuration Mismatch
+B1BBA	Passenger Seat Weight Sensor Supply Circuit
+B1BBB	Passenger Seat Weight Sensor Inputs Shorted Together
+B1BBC	OCS Negative System Weight
+B1BBD	OCM Current Configuration Table Unprogrammed
+B1BC7	Deployment Data Record Full
+
+# Airbags / restraints - Side thorax / pretensioners
+B1C27	Left Side Seat Thorax Squib 1 Low
+B1C28	Left Side Seat Thorax Squib 1 High
+B1C29	Left Side Seat Thorax Squib 1 Open
+B1C2A	Left Side Seat Thorax Squib 1 Shorted Together
+B1C2B	Right Side Seat Thorax Squib 1 Low
+B1C2C	Right Side Seat Thorax Squib 1 High
+B1C2D	Right Side Seat Thorax Squib 1 Open
+B1C2E	Right Side Seat Thorax Squib 1 Shorted Together
+B1C38	1st Row Driver Retractor Pretensioner Circuit Low
+B1C39	1st Row Driver Retractor Pretensioner Circuit High
+B1C3A	1st Row Driver Retractor Pretensioner Circuit Open
+B1C3B	1st Row Driver Retractor Pretensioner Circuit Shorted Together
+B1C47	1st Row Passenger Retractor Pretensioner Circuit Low
+B1C48	1st Row Passenger Retractor Pretensioner Circuit High
+B1C49	1st Row Passenger Retractor Pretensioner Circuit Open
+B1C4A	1st Row Passenger Retractor Pretensioner Circuit Shorted Together
+
+# Ignition / system voltage
+B2101	Ignition Run/Start Input Circuit Low
+B2102	Ignition Run/Start Input Circuit High
+B210A	System Voltage Low (WCM)
+B210B	System Voltage High (WCM)
+B210D	Battery Voltage Low (WCM)
+B210E	Battery Voltage High (WCM)
+B212C	Ignition Run/Start Input Circuit Open
+B212D	Ignition Run Only Input Circuit Open
+B2142	Ignition Off Draw (IOD) Fuse Not Present
+B219A	Ignition Unlock Run/Start Control Circuit Overcurrent
+B219F	Ignition Off Draw (IOD) Fuse Blown
+
+# Module / configuration mismatch
+B2201	Calibration Mismatch
+B2204	ECU Configuration Mismatch
+B2205	Original VIN Missing / Mismatch
+B2206	Current VIN Missing / Mismatch
+B2207	Occupant Restraint Controller Internal 1
+B2208	Occupant Restraint Controller Internal 2
+B2209	Occupant Restraint Controller Internal 3
+B220A	Occupant Restraint Controller Internal 4
+B220B	Occupant Restraint Controller Firing Stored Energy
+B220C	Occupant Restraint Controller Accelerometer 1 Internal
+B220D	Occupant Restraint Controller Accelerometer 2 Internal
+B2212	Occupant Classification Module Internal
+B2222	Satellite Radio Receiver Internal
+B2224	SKREEM Internal
+B2229	SKREEM Internal - SKIM Immobilizer
+B222A	Vehicle Line Mismatch
+B222C	Vehicle Configuration Not Programmed
+B223B	Vehicle Configuration Mismatch
+B223C	Intrusion Transceiver Module Internal
+B223D	Occupant Classification Module DTC Present
+B2254	Column Lock Module Internal
+
+# Wipers / washers / horn
+B2304	Wiper Park Switch Input Circuit Low
+B2305	Wiper Park Switch Input Circuit High
+B230D	Rear Wiper Park Switch Input Circuit Low (Stuck Low)
+B230E	Rear Wiper Park Switch Input Circuit High (Stuck High)
+B2323	Headlamp Washer Motor Control Circuit Low
+B2324	Headlamp Washer Motor Control Circuit High
+B2339	Horn Switch Stuck
+
+# ===========================================================
+# CHASSIS  (C-codes)  --  TPMS, 4WD, transfer case, battery
+# ===========================================================
+
+C0077	Low Tire Pressure
+C1404	Transfer Case Range Position Sensor Circuit Low (TIPM)
+C1405	Transfer Case Range Position Sensor Circuit High (TIPM)
+C1417	Front Differential Control Circuit Low
+C1418	Front Differential Control Circuit High
+C141D	Rear Differential Control Circuit Low
+C141E	Rear Differential Control Circuit High
+C1501	Tire Pressure Sensor 1 Internal
+C1502	Tire Pressure Sensor 2 Internal
+C1503	Tire Pressure Sensor 3 Internal
+C1504	Tire Pressure Sensor 4 Internal
+C2100	Battery Voltage Low
+C2101	Battery Voltage High
+C2207	Off Road ECU Internal
+
+# ===========================================================
+# POWERTRAIN  (P-codes)  --  engine, transmission, emissions
+# ===========================================================
+
+# Engine sensors - Position / timing
+P0016	Crankshaft / Camshaft Timing Misalignment
+P0315	No Crank Sensor Learned
+P0325	Knock Sensor 1 Circuit
+P0335	Crankshaft Position Sensor Circuit
+P0339	Crankshaft Position Sensor Intermittent
+P0340	Camshaft Position Sensor Circuit
+P0344	Camshaft Position Sensor Intermittent
+
+# Engine sensors - Pressure / temperature / air
+P0071	Ambient Air Temperature Sensor Performance
+P0072	Ambient Air Temperature Sensor Circuit Low
+P0073	Ambient Air Temperature Sensor Circuit High
+P0107	Manifold Absolute Pressure Sensor Circuit Low
+P0108	Manifold Absolute Pressure Sensor Circuit High
+P0111	Intake Air Temperature Sensor Rationality
+P0112	Intake Air Temperature Sensor Circuit Low
+P0113	Intake Air Temperature Sensor Circuit High
+P0116	Engine Coolant Temperature Sensor Performance
+P0117	Engine Coolant Temperature Sensor Circuit Low
+P0118	Engine Coolant Temperature Sensor Circuit High
+P0129	Barometric Pressure Out-Of-Range Low
+
+# Engine - Throttle position
+P0121	Throttle Position Sensor 1 Performance
+P0122	Throttle Position Sensor 1 Circuit Low (TPS / APPS)
+P0123	Throttle Position Sensor 1 Circuit High (TPS / APP)
+P0124	TPS / APP Intermittent
+P0221	Throttle Position Sensor 2 Performance
+P0222	Throttle Position Sensor 2 Circuit Low
+P0223	Throttle Position Sensor 2 Circuit High
+
+# Engine - Cooling
+P0125	Insufficient Coolant Temperature For Closed-Loop Fuel Control
+P0128	Thermostat Rationality
+P0218	High Temperature Operation Activated
+P0480	Cooling Fan 1 Control Circuit
+P0481	Cooling Fan 2 Control Circuit
+P0691	Cooling Fan 1 Control Circuit Low
+P0692	Cooling Fan 1 Control Circuit High
+P0693	Cooling Fan 2 Control Circuit Low
+P0694	Cooling Fan 2 Control Circuit High
+P2181	Cooling System Performance
+P1115	General Temperature Rationality
+
+# O2 sensors - Bank 1 / Bank 2
+P0131	O2 Sensor 1/1 Circuit Low
+P0132	O2 Sensor 1/1 Circuit High
+P0133	O2 Sensor 1/1 Slow Response
+P0135	O2 Sensor 1/1 Heater Performance
+P0137	O2 Sensor 1/2 Circuit Low
+P0138	O2 Sensor 1/2 Circuit High
+P0139	O2 Sensor 1/2 Slow Response
+P013A	O2 Sensor 1/2 Slow Response - Rich To Lean
+P013C	O2 Sensor 2/2 Slow Response - Rich To Lean
+P0141	O2 Sensor 1/2 Heater Performance
+P0151	O2 Sensor 2/1 Circuit Low
+P0152	O2 Sensor 2/1 Circuit High
+P0153	O2 Sensor 2/1 Slow Response
+P0155	O2 Sensor 2/1 Heater Performance
+P0157	O2 Sensor 2/2 Circuit Low
+P0158	O2 Sensor 2/2 Circuit High
+P0159	O2 Sensor 2/2 Slow Response
+P0161	O2 Sensor 2/2 Heater Performance
+P2271	O2 Sensor 1/2 Signal Stuck Rich
+P2273	O2 Sensor 2/2 Signal Stuck Rich
+
+# O2 sensor heater circuits
+P0031	O2 Sensor 1/1 Heater Circuit Low
+P0032	O2 Sensor 1/1 Heater Circuit High
+P0037	O2 Sensor 1/2 Heater Circuit Low
+P0038	O2 Sensor 1/2 Heater Circuit High
+P0051	O2 Sensor 2/1 Heater Circuit Low
+P0052	O2 Sensor 2/1 Heater Circuit High
+P0057	O2 Sensor 2/2 Heater Circuit Low
+P0058	O2 Sensor 2/2 Heater Circuit High
+
+# Fuel system - Trim and injectors
+P0171	Fuel System 1/1 Lean
+P0172	Fuel System 1/1 Rich
+P0174	Fuel System 2/1 Lean
+P0175	Fuel System 2/1 Rich
+P0201	Fuel Injector 1 Circuit
+P0202	Fuel Injector 2 Circuit
+P0203	Fuel Injector 3 Circuit
+P0204	Fuel Injector 4 Circuit
+P0205	Fuel Injector 5 Circuit
+P0206	Fuel Injector 6 Circuit
+P0461	Fuel Level Sensor 1 Performance
+P0462	Fuel Level Sensor 1 Circuit Low
+P0463	Fuel Level Sensor 1 Circuit High
+P0522	Engine Oil Pressure Too Low
+P0627	Fuel Pump Control Circuit
+P0944	Loss Of Hydraulic Pump Prime
+P1128	Closed Loop Fueling Not Achieved - Bank 1
+P1129	Closed Loop Fueling Not Achieved - Bank 2
+P2096	Downstream Fuel Trim System 1 Lean
+P2097	Downstream Fuel Trim System 1 Rich
+P2098	Downstream Fuel Trim System 2 Lean
+P2099	Downstream Fuel Trim System 2 Rich
+
+# Misfire
+P0300	Multiple Cylinder Misfire
+P0301	Cylinder 1 Misfire
+P0302	Cylinder 2 Misfire
+P0303	Cylinder 3 Misfire
+P0304	Cylinder 4 Misfire
+P0305	Cylinder 5 Misfire
+P0306	Cylinder 6 Misfire
+
+# Ignition coils
+P2302	Ignition Coil 1 Secondary Circuit - Insufficient Ionization
+P2305	Ignition Coil 2 Secondary Circuit - Insufficient Ionization
+P2308	Ignition Coil 3 Secondary Circuit - Insufficient Ionization
+
+# Emission control - EGR / EVAP / catalyst
+P0401	EGR System Performance
+P0403	EGR Solenoid Circuit
+P0404	EGR Position Sensor Rationality Open
+P0405	EGR Position Sensor Circuit Low
+P0406	EGR Position Sensor Circuit High
+P1404	EGR Position Sensor Rationality Closed
+P0420	Catalyst Efficiency (Bank 1)
+P0430	Catalyst Efficiency (Bank 2)
+P0440	General EVAP System Failure
+P0441	EVAP Purge System Performance
+P0443	EVAP Purge Solenoid Circuit
+P0452	EVAP Pressure Switch Stuck Closed
+P0455	EVAP Purge System Large Leak
+P0456	EVAP Purge System Small Leak
+P0457	Loose Fuel Cap
+
+# Air metering - Airflow / vacuum
+P2072	Electronic Throttle Control System - Ice Blockage
+P2172	High Airflow / Vacuum Leak Detected (Instantaneous Accumulation)
+P2173	High Airflow / Vacuum Leak Detected (Slow Accumulation)
+P2174	Low Airflow / Restriction Detected (Instantaneous Accumulation)
+P2175	Low Airflow / Restriction Detected (Slow Accumulation)
+
+# A/C system
+P0532	A/C Pressure Sensor Circuit Low
+P0533	A/C Pressure Sensor Circuit High
+P0645	A/C Clutch Control Circuit
+P1273	A/C Clutch Control Circuit 2 High (TIPM)
+P1275	A/C Clutch Control Circuit 2 Overcurrent (TIPM)
+
+# Speed / idle / brake / cruise
+P0501	Vehicle Speed Sensor 1 Performance
+P0503	Vehicle Speed Sensor 1 Erratic
+P0506	Idle Speed Performance Lower Than Expected
+P0507	Idle Speed Performance Higher Than Expected
+P050B	Cold Start Ignition Timing Performance
+P050D	Cold Start Rough Idle
+P0571	Brake Switch 1 Performance
+P0572	Brake Switch 1 Stuck On
+P0573	Brake Switch 1 Stuck Off
+P0579	Speed Control Switch 1 Performance
+P0580	Speed Control Switch 1 Circuit Low
+P0581	Speed Control Switch 1 Circuit High
+P0585	Speed Control Switch 1/2 Correlation
+P0591	Speed Control Switch 2 Performance
+P0592	Speed Control Switch 2 Circuit Low
+P0593	Speed Control Switch 2 Circuit High
+P0703	Brake Switch 2 Performance
+P0726	Engine Speed Input Circuit Range / Performance
+P1501	Vehicle Speed Sensor 1/2 Correlation - Drive Wheels
+P1502	Vehicle Speed Sensor 1/2 Correlation - Non Drive Wheels
+P1572	Brake Pedal Stuck On
+P1573	Brake Pedal Stuck Off
+P1593	Speed Control Switch 1/2 Stuck
+P2161	Vehicle Speed Sensor 2 Erratic
+P2299	Brake Pedal Position / Accelerator Pedal Position Incompatible
+
+# Electronic Throttle Control (ETC)
+P2100	Electronic Throttle Control Motor Circuit
+P2101	Electronic Throttle Control Motor Performance
+P2107	Electronic Throttle Control Module Processor
+P2110	Electronic Throttle Control - Forced Limited RPM
+P2111	Electronic Throttle Control - Unable To Close
+P2112	Electronic Throttle Control - Unable To Open
+P2115	Accelerator Pedal Position Sensor 1 Minimum Stop Performance
+P2116	Accelerator Pedal Position Sensor 2 Minimum Stop Performance
+P2118	Electronic Throttle Control Motor Current Performance
+P2122	Accelerator Pedal Position Sensor 1 Circuit Low
+P2123	Accelerator Pedal Position Sensor 1 Circuit High
+P2127	Accelerator Pedal Position Sensor 2 Circuit Low
+P2128	Accelerator Pedal Position Sensor 2 Circuit High
+P2135	Throttle Position Sensor 1/2 Correlation
+P2138	Accelerator Pedal Position Sensor 1/2 Correlation
+P2166	Accelerator Pedal Position Sensor 1 Maximum Stop Performance
+P2167	Accelerator Pedal Position Sensor 2 Maximum Stop Performance
+P060B	ETC A/D Ground Performance
+P060D	ETC Level 2 APP Performance
+P060E	ETC Level 2 TPS Performance
+P060F	ETC Level 2 ECT Performance
+P061A	ETC Level 2 Torque Performance
+P061C	ETC Level 2 RPM Performance
+P062C	ETC Level 2 MPH Performance
+
+# Battery / charging system
+P0562	Battery Voltage Low
+P0563	Battery Voltage High
+P0622	Generator Field Control Circuit
+P063A	Generator Voltage Sense Circuit
+P2503	Charging System Output Low
+P2504	Charging System Output High
+
+# Module internal / sensor reference voltage
+P0600	Serial Communication Link
+P0601	Internal Memory Checksum Invalid
+P0602	Control Module Programming Error / Not Programmed
+P0604	Internal Control Module RAM
+P0605	Internal Control Module ROM
+P0606	Internal ECM Processor
+P0613	Internal Transmission Processor
+P0630	VIN Not Programmed In PCM
+P0632	Odometer Not Programmed In PCM
+P0633	SKIM Secret Key Not Stored In PCM
+P0642	Sensor Reference Voltage 1 Circuit Low
+P0643	Sensor Reference Voltage 1 Circuit High
+P0652	Sensor Reference Voltage 2 Circuit Low
+P0653	Sensor Reference Voltage 2 Circuit High
+P0685	Auto Shutdown Control Circuit
+P0688	Auto Shutdown Sense Circuit Low
+P1602	PCM Not Programmed
+P1607	PCM Internal Shutdown Timer Rationality Too Slow
+P1618	Sensor Reference Voltage 1 Circuit Erratic
+P1628	Sensor Reference Voltage 2 Circuit Erratic
+P1684	Battery Was Disconnected
+P1696	EEPROM Memory Write Denied / Invalid
+P1697	EMR (SRI) Mileage Not Stored
+P2610	PCM Internal Shutdown Timer Rationality Too Fast
+P0513	Invalid SKIM Key
+
+# Transmission - General / range / speed sensors
+P0700	Transmission Control System (MIL Request)
+P0706	Transmission Range Sensor Rationality
+P0711	Transmission Temperature Sensor Performance
+P0712	Transmission Temperature Sensor Low
+P0713	Transmission Temperature Sensor High
+P0714	Transmission Temperature Sensor Intermittent
+P0716	Input Speed Sensor 1 Circuit Performance
+P0721	Output Speed Sensor Circuit Performance
+
+# Transmission - Gear ratios / solenoids
+P0731	Gear Ratio Error In 1st
+P0732	Gear Ratio Error In 2nd
+P0733	Gear Ratio Error In 3rd
+P0734	Gear Ratio Error In 4th
+P0736	Gear Ratio Error In Reverse
+P0740	TCC Out Of Range
+P0750	LR Solenoid Circuit
+P0755	2/4 Solenoid Circuit
+P0760	OD Solenoid Circuit
+P0765	UD Solenoid Circuit
+
+# Transmission - Pressure switches / line pressure
+P0841	LR Pressure Switch Rationality
+P0845	2/4 Hydraulic Pressure Test
+P0846	2/4 Pressure Switch Rationality
+P0868	Line Pressure Low
+P0869	Line Pressure High
+P0870	OD Hydraulic Pressure Test
+P0871	OD Pressure Switch Rationality
+P0933	Line Pressure Sensor Circuit Performance
+P0934	Line Pressure Sensor Circuit Low
+P0935	Line Pressure Sensor Circuit High
+P0992	2/4/OD Hydraulic Pressure Test
+P1745	Transmission Line Pressure Too High For Too Long
+
+# Transmission - PRNDL / TCM / relay / power
+P0850	Park / Neutral Switch Performance
+P0853	Overdrive / Tow Switch Input Circuit Stuck
+P0882	TCM Power Input Low
+P0883	TCM Power Input High
+P0884	Power Up At Speed
+P0888	Transmission Relay Always Off
+P0890	Switched Battery
+P0891	Transmission Relay Always On
+P0897	Transmission Fluid Deteriorated
+P128B	TCM Power Control Circuit 2 Low - TIPM
+P128C	TCM Power Control Circuit 2 High - TIPM
+P128D	TCM Power Control Circuit 2 Open - TIPM
+P128E	TCM Power Control Circuit 2 Overcurrent - TIPM
+P129C	Inverter Control Circuit High (TIPM)
+P129E	Inverter Control Circuit Overcurrent (TIPM)
+P1713	Restricted Manual Valve In T2 Range
+P1775	Solenoid Switch Valve Latched In TCC Position
+P1776	Solenoid Switch Valve Latched In LR Position
+P1790	Fault Immediately After Shift
+P1794	Speed Sensor Ground Error
+P1797	Manual Shift Overheat
+P1897	Level 1 RPM Bus Unlock
+
+# ===========================================================
+# NETWORK  (U-codes)  --  CAN / LIN bus comm failures
+# ===========================================================
+
+# Bus health / faults
+U0001	CAN C Bus / Circuit
+U0002	CAN C Bus Off Performance
+U0010	CAN Interior Bus
+U0011	CAN Interior Bus Off Performance
+U0019	CAN Interior Bus(+)/(-) Circuit
+U0020	CAN Interior Bus Off Performance
+U1008	LIN 1 Bus
+
+# Lost communication - Powertrain / chassis modules
+U0100	Lost Communication With ECM / PCM
+U0101	Lost Communication With TCM
+U0114	Lost Communication With Final Drive Control Module
+U0121	Lost Communication With Anti-Lock Brake System (ABS) Control Module
+U0126	Lost Communication With SAS - CAN C (Steering Angle Sensor)
+U0141	Lost Communication With Front Control Module (TIPM)
+U0146	Lost Communication With Central Gateway
+
+# Lost communication - Restraint / occupant / cluster
+U0151	Lost Communication With Occupant Restraint Controller (ORC)
+U0154	Lost Communication With Occupant Classification Module
+U0155	Lost Communication With Cluster / CCN (SKREEM)
+U0161	Lost Communication With Compass Module
+U0167	Lost Communication With Intrusion Transceiver Control Module
+U0168	Lost Communication With Vehicle Security Control Module (SKREEM / WCM)
+U0170	Lost Communication With Up-Front Left Satellite Acceleration Sensor
+U0171	Lost Communication With Up-Front Right Satellite Acceleration Sensor
+U0172	Lost Communication With Left Side Satellite Acceleration Sensor 1
+U0175	Lost Communication With Right Side Satellite Acceleration Sensor 1
+
+# Lost communication - HVAC / audio / phone
+U0164	Lost Communication With HVAC Control Module
+U0184	Lost Communication With Radio
+U0186	Lost Communication With Audio Amplifier
+U0193	Lost Communication With Traffic Information Receiver Module
+U0195	Lost Communication With SDARS (Satellite Digital Audio Receiver)
+U0197	Lost Communication With Hands Free Phone Module
+
+# Lost communication - Doors
+U0199	Lost Communication With Driver's Door Module
+U0200	Lost Communication With Passenger Door Module
+
+# Implausible data
+U0415	Implausible Data Received From ABS
+U0447	Implausible Data Received From Central Gateway
+U110A	Lost Communication With SCM
+U110C	Lost Fuel Level Message
+U110D	Lost Communication With Security Siren
+U110E	Lost Ambient Temperature Message
+U110F	Lost Fuel Volume Message
+U1110	Lost Vehicle Speed Message
+U1113	Lost A/C Pressure Message
+U1120	Lost Wheel Distance Message
+U113B	Lost Communication With Switch Bank Module
+U1149	Lost Communication With Multifunction
+U1159	Lost Communication With ASBS
+U1169	Lost Communication With Intrusion Sensor 1
+U1170	Lost Communication With Intrusion Sensor 2
+U1179	Lost Communication With Intrusion Sensor 3
+U1403	Implausible Fuel Level Signal Received
+U1411	Implausible Fuel Volume Signal Received
+U1412	Implausible Vehicle Speed Signal Received
+U1414	Implausible / Missing ECU Network Configuration Data
+U1415	Implausible / Missing Vehicle Configuration Data
+U1416	Implausible Security Siren Signal Received
+U1417	Implausible Left Wheel Distance Signal Received
+U1418	Implausible Right Wheel Distance Signal
+U1419	Implausible Data Received From OCS Sensor 3 - Left Front
+U141A	Implausible Data Received From OCS Sensor 2 - Right Front
+U141B	Implausible Data Received From OCS Sensor 4 - Left Rear
+U141C	Implausible Data Received From OCS Sensor 1 - Right Rear
